@@ -4,11 +4,16 @@ import Data.Char (toLower)
 import Data.List (sort, group)
 import System.IO ( hPutStrLn, withFile, IOMode(WriteMode) )
 
--- |Function to calculate the ciao of a string
+{-
+|Function to calculate the ciao of a string
+-}
 ciao :: String -> String
 ciao = sort . map toLower
 
--- |Function to read a text file and create an MSet of ciaos with multiplicities
+{- |Function to read a text file and create an MSet of ciaos with multiplicities
+
+- @filename@ is the path of the file to read from
+-}
 readMSet :: FilePath -> IO (MSet String)
 readMSet filename = do
   content <- readFile filename
@@ -18,12 +23,13 @@ readMSet filename = do
       ciaoWithMultiplicity = map (\grouped -> (head grouped, length grouped)) groupedCiaos
   return $ MS ciaoWithMultiplicity
 
--- Example usage:
--- let filename = "example.txt"
--- result <- readMSet filename
--- putStrLn $ "MSet of ciaos from the file: " ++ show result
 
--- |Function to write MSet elements with multiplicities to a file
+
+{- |Function to write MSet elements with multiplicities to a file
+
+- @filename@ is the path of the file to write to
+- @ms@ is the MSet to write to the file
+-}
 writeMSet :: Show a => FilePath -> MSet a -> IO ()
 writeMSet filename (MS ms) = withFile filename WriteMode $ \handle -> do
   mapM_ (hPutStrLn handle . formatEntry) ms
@@ -31,19 +37,8 @@ writeMSet filename (MS ms) = withFile filename WriteMode $ \handle -> do
     formatEntry :: Show a => (a, Int) -> String
     formatEntry (elem, multiplicity) = show elem ++ " - " ++ show multiplicity
 
-
--- Example usage:
--- let mset = add (add empty "hello") "world"
--- let outputFilename = "output.txt"
--- writeMSet outputFilename mset
--- putStrLn $ "Multiset written to file: " ++ outputFilename
-
-
--- |Function to check if two multisets have the same elements
-sameElements :: Eq a => MSet a -> MSet a -> Bool
-sameElements mset1 mset2 = subeq mset1 mset2 && subeq mset2 mset1
-
--- |Main function
+{- |Main function used to test the MultiSet module
+-}
 main :: IO ()
 main = do
   -- a. Load files into corresponding multisets
