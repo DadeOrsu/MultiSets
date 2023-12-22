@@ -9,6 +9,7 @@ module MultiSet
   , mapMSet
   ) where
 import Data.Maybe ( fromMaybe )
+import Data.List (sortBy, sort)
 
 data MSet a = MS [(a, Int)] deriving (Show)
 
@@ -57,16 +58,21 @@ each with the sum of their multiplicities in mset1 and mset2
 - @ms1@ is the first MSet to be united
 - @ms2@ is the second MSet to be united
 -}
+
 union :: Eq a => Ord a => MSet a -> MSet a -> MSet a
-union (MS ms1) (MS ms2) = MS (unionHelper ms1 ms2)
+union (MS ms1) (MS ms2) = MS $ unionHelper (sortPairs $ MS ms1) (sortPairs $ MS ms2)
   where
-    unionHelper :: Eq a => Ord a => [(a, Int)] -> [(a, Int)] -> [(a, Int)]
+    unionHelper :: Eq a => Ord a =>[(a, Int)] -> [(a, Int)] -> [(a, Int)]
     unionHelper [] ms = ms
     unionHelper ms [] = ms
     unionHelper ((v1, n1):rest1) ((v2, n2):rest2)
       | v1 == v2 = (v1, n1 + n2) : unionHelper rest1 rest2
       | v1 < v2 = (v1, n1) : unionHelper rest1 ((v2, n2):rest2)
       | otherwise = (v2, n2) : unionHelper ((v1, n1):rest1) rest2
+
+    sortPairs :: Eq a => Ord a => MSet a -> [(a, Int)]
+    sortPairs (MS ms) = sort ms
+
 
 {-|Equality instance for MSet
 -}
@@ -82,6 +88,8 @@ instance Foldable MSet where
 
 
 {-| mapMSet f mset returns a multiset obtained by applying f to each element of mset
+- @f@ is the function to be applied to each element of mset
+- @mset@ is the MSet to be mapped
 -}
 mapMSet :: Eq a => (t -> a) -> MSet t -> MSet a
 mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
