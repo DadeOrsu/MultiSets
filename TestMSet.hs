@@ -11,7 +11,6 @@ ciao :: String -> String
 ciao = sort . map toLower
 
 {- |Function to read a text file and create an MSet of ciaos with multiplicities
-
 - @filename@ is the path of the file to read from
 -}
 readMSet :: FilePath -> IO (MSet String)
@@ -26,7 +25,6 @@ readMSet filename = do
 
 
 {- |Function to write MSet elements with multiplicities to a file
-
 - @filename@ is the path of the file to write to
 - @ms@ is the MSet to write to the file
 -}
