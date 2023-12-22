@@ -46,7 +46,7 @@ main = do
   m4 <- readMSet "aux_files/margana2.txt"
 
   -- b. Check facts and print comments
-  putStrLn "Facts:"
+  putStrLn "tests:"
   -- i. Multisets m1 and m4 are not equal, but they have the same elements
   putStrLn $ "i.a Multisets m1 and m4 are not equal: " ++ show (m1 /= m4)
   putStrLn $ "i.b Multisets m1 and m4 have the same elements: " ++ show (elems m1 == elems m4)

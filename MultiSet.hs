@@ -32,7 +32,6 @@ add (MS ms) v = MS (addHelper ms v)
       Nothing -> (v', 1) : ms'
 
 {-|returns the number of occurrences of v in mset
-
 - @ms@ is the MSet to be checked
 - @v@ is the element to be checked
 -}
@@ -57,8 +56,9 @@ subeq (MS ms1) (MS ms2) = all (\(v, n) -> n <= occs (MS ms2) v) ms1
 each with the sum of their multiplicities in mset1 and mset2
 - @ms1@ is the first MSet to be united
 - @ms2@ is the second MSet to be united
+it works by sorting the pairs of the two MSet and then merge them to obtain the union
+of the two MSet.
 -}
-
 union :: Eq a => Ord a => MSet a -> MSet a -> MSet a
 union (MS ms1) (MS ms2) = MS $ unionHelper (sortPairs $ MS ms1) (sortPairs $ MS ms2)
   where
@@ -69,7 +69,7 @@ union (MS ms1) (MS ms2) = MS $ unionHelper (sortPairs $ MS ms1) (sortPairs $ MS 
       | v1 == v2 = (v1, n1 + n2) : unionHelper rest1 rest2
       | v1 < v2 = (v1, n1) : unionHelper rest1 ((v2, n2):rest2)
       | otherwise = (v2, n2) : unionHelper ((v1, n1):rest1) rest2
-
+    -- this function is used to obtain a sorted list of pairs from a MSet
     sortPairs :: Eq a => Ord a => MSet a -> [(a, Int)]
     sortPairs (MS ms) = sort ms
 
@@ -90,6 +90,9 @@ instance Foldable MSet where
 {-| mapMSet f mset returns a multiset obtained by applying f to each element of mset
 - @f@ is the function to be applied to each element of mset
 - @mset@ is the MSet to be mapped
+this function applies the function f to each element of the MSet and then combines the
+multiplicities of the elements that have the same value after the application of f to
+obtain a well-formed MSet.
 -}
 mapMSet :: Eq a => (t -> a) -> MSet t -> MSet a
 mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
@@ -99,3 +102,15 @@ mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
       case lookup v acc of
         Just m  -> (v, n + m) : filter (\(x, _) -> x /= v) acc
         Nothing -> (v, n) : acc
+
+{-
+explaination: 
+it is not possible to define an instance of Functor for MSet by providing mapMSet as the
+implementation of fmap because the structure of the functor remains unchanged and only the 
+values are modified, this is not allowed by the Functor laws. 
+When the mapMSet function is applied to a MSet, the structure of the MSet could change.
+- Example:
+- mapMSet (\x -> fromIntegral $ x `mod` 2) (MS [(1,2),(2,4),(3,1),(4,1)])
+- result: MS [(1,3),(0,5)]
+so not only the values are changed but also the structure of the MSet to mantain the mset well-formed.
+-}
