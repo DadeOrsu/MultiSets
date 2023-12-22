@@ -87,13 +87,7 @@ instance Foldable MSet where
   foldr f acc (MS ms) = foldr (\(v, _) restAcc -> f v restAcc) acc ms
 
 
-{-|Functor instance for MSet
+{-| mapMSet f mset returns a multiset obtained by applying f to each element of mset
 -}
 mapMSet :: Eq b => (a -> b) -> MSet a -> MSet b
-mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
-  where
-    combineMultiplicities = foldr combineOrInsert []
-    combineOrInsert (v, n) acc =
-      case lookup v acc of
-        Just m  -> (v, n + m) : filter (\(x, _) -> x /= v) acc
-        Nothing -> (v, n) : acc
+mapMSet f (MS ms) = foldr (\(v, _) acc -> add acc (f v)) (MS []) ms
