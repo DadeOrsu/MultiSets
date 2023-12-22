@@ -8,6 +8,7 @@ module MultiSet
   , union
   , mapMSet
   ) where
+import Data.Maybe ( fromMaybe )
 
 data MSet a = MS [(a, Int)] deriving (Show)
 
@@ -25,10 +26,9 @@ add :: Eq a => MSet a -> a -> MSet a
 add (MS ms) v = MS (addHelper ms v)
   where
     addHelper :: Eq a => [(a, Int)] -> a -> [(a, Int)]
-    addHelper [] newV = [(newV, 1)]
-    addHelper ((existingV, n):rest) newV
-      | existingV == newV = (existingV, n + 1) : rest
-      | otherwise = (existingV, n) : addHelper rest newV
+    addHelper ms' v' = case lookup v' ms' of
+      Just n  -> map (\(x, m) -> if x == v' then (x, m + 1) else (x, m)) ms'
+      Nothing -> (v', 1) : ms'
 
 {-|returns the number of occurrences of v in mset
 
@@ -36,13 +36,7 @@ add (MS ms) v = MS (addHelper ms v)
 - @v@ is the element to be checked
 -}
 occs :: Eq a => MSet a -> a -> Int
-occs (MS ms) v = occsHelper ms v
-  where
-    occsHelper :: Eq a => [(a, Int)] -> a -> Int
-    occsHelper [] _ = 0
-    occsHelper ((x, n):rest) v
-      | x == v = n
-      | otherwise = occsHelper rest v
+occs (MS ms) v = fromMaybe 0 (lookup v ms)
 
 {-|returns a list containing the elements of the multiset
 - @ms@ is the MSet to be converted to a list
