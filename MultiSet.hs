@@ -94,7 +94,7 @@ this function applies the function f to each element of the MSet and then combin
 multiplicities of the elements that have the same value after the application of f to
 obtain a well-formed MSet.
 -}
-mapMSet :: Eq a => (t -> a) -> MSet t -> MSet a
+mapMSet :: Eq a => (b -> a) -> MSet b -> MSet a
 mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
   where
     combineMultiplicities = foldr combineOrInsert []
@@ -104,13 +104,8 @@ mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
         Nothing -> (v, n) : acc
 
 {-
-explaination: 
-it is not possible to define an instance of Functor for MSet by providing mapMSet as the
-implementation of fmap because the structure of the functor remains unchanged and only the 
-values are modified, this is not allowed by the Functor laws. 
-When the mapMSet function is applied to a MSet, the structure of the MSet could change.
-- Example:
-- mapMSet (\x -> fromIntegral $ x `mod` 2) (MS [(1,2),(2,4),(3,1),(4,1)])
-- result: MS [(1,3),(0,5)]
-so not only the values are changed but also the structure of the MSet to mantain the mset well-formed.
+EXPLANATION: 
+it is not possible to define an instance of "Functor" for MSet by providing mapMSet method
+as the implementation of fmap. Functors are defined to work for every "a" and "b", 
+but in this case the constraint "Eq a" to ensure that the MSet is well-formed.
 -}
