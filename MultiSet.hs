@@ -107,5 +107,5 @@ mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
 EXPLANATION: 
 it is not possible to define an instance of "Functor" for MSet by providing mapMSet method
 as the implementation of fmap. Functors are defined to work for every "a" and "b", 
-but in this case the constraint "Eq a" to ensure that the MSet is well-formed.
+but in this case the constraint "Eq a" is used to ensure that the MSet is well-formed.
 -}
