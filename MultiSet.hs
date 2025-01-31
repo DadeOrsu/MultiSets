@@ -105,8 +105,24 @@ mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
 
 
 {-
-EXPLANATION: 
-it is not possible to define an instance of "Functor" for MSet by providing mapMSet method
-as the implementation of fmap. Functors are defined to work for every "a" and "b", 
-but in this case the constraint "Eq a" is used to ensure that the MSet is well-formed.
+It is not possible to define an instance of "Functor" for MSet by providing mapMSet as 
+the implementation of fmap because the Functor type class requires that fmap works 
+for every function (a -> b) without any additional constraints. However, mapMSet has the type:
+
+mapMSet :: Eq a => (b -> a) -> MSet b -> MSet a
+
+which introduces the constraint (Eq a). This constraint is necessary to ensure that the 
+MSet remains well-formed by merging elements that become equal after applying the function.
+
+A Functor does not allow additional constraints on "a" or "b". 
+Furthermore, Functor does not provide a mechanism to merge elements with the same value, 
+which is required to maintain a well-formed multiset.
+
+For example, given:
+
+  let ms = MS [(1, 2), (2, 3)]
+  let f x = if x == 1 then 2 else 3
+
+applying mapMSet f should yield MS [(2, 5), (3, 3)] by merging occurrences, 
+but fmap does not inherently support such aggregation.
 -}
