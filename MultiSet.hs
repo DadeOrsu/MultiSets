@@ -98,10 +98,11 @@ mapMSet :: Eq a => (b -> a) -> MSet b -> MSet a
 mapMSet f (MS lst) = MS (combineMultiplicities $ map (\(x, y) -> (f x, y)) lst)
   where
     combineMultiplicities = foldr combineOrInsert []
-    combineOrInsert (v, n) acc =
-      case lookup v acc of
-        Just m  -> (v, n + m) : filter (\(x, _) -> x /= v) acc
-        Nothing -> (v, n) : acc
+    combineOrInsert (v, n) [] = [(v, n)]
+    combineOrInsert (v, n) ((x, m) : xs)
+      | v == x    = (v, n + m) : xs
+      | otherwise = (x, m) : combineOrInsert (v, n) xs
+
 
 {-
 EXPLANATION: 
