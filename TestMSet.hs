@@ -36,22 +36,20 @@ writeMSet filename (MS ms) = writeFile filename (unlines formattedEntries)
 -}
 main :: IO ()
 main = do
-  -- a. Load files into corresponding multisets
+  -- Load files into corresponding multisets using readMSet
   m1 <- readMSet "aux_files/anagram.txt"
   m2 <- readMSet "aux_files/anagram-s1.txt"
   m3 <- readMSet "aux_files/anagram-s2.txt"
   m4 <- readMSet "aux_files/margana2.txt"
 
-  -- b. Check facts and print comments
+  -- Test the MultiSet module
   putStrLn "tests:"
-  -- i. Multisets m1 and m4 are not equal, but they have the same elements
   putStrLn $ "i.a Multisets m1 and m4 are not equal: " ++ show (m1 /= m4)
   putStrLn $ "i.b Multisets m1 and m4 have the same elements: " ++ show (elems m1 == elems m4)
-  -- ii. Multiset m1 is equal to the union of multisets m2 and m3
   let unionM2M3 = m2 `union` m3
   putStrLn $ "ii. Multiset m1 is equal to the union of multisets m2 and m3: " ++ show (m1 == unionM2M3)
 
-  -- c. Write multisets m1 and m4 to files
+  -- Write multisets m1 and m4 to files output/anag-out.txt and output/gana-out.txt
   writeMSet "output/anag-out.txt" m1
   writeMSet "output/gana-out.txt" m4
   putStrLn "Multisets m1 and m4 written to files output/anag-out.txt and output/gana-out.txt."
