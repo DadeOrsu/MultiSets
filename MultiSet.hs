@@ -42,7 +42,7 @@ occs (MS ms) v = fromMaybe 0 (lookup v ms)
 - @ms@ is the MSet to be converted to a list
 -}
 elems :: MSet a -> [a]
-elems (MS ms) = concatMap (\(x, _) -> [x]) ms
+elems (MS ms) = map fst ms
 
 {-|returns True if each element of MSet a is also an element
 of MSet b with the same multiplicity at least.
