@@ -26,11 +26,11 @@ readMSet filename = do
 - @ms@ is the MSet to write to the file
 -}
 writeMSet :: Show a => FilePath -> MSet a -> IO ()
-writeMSet filename (MS ms) = withFile filename WriteMode $ \handle -> do
-  mapM_ (hPutStrLn handle . formatEntry) ms
+writeMSet filename (MS ms) = writeFile filename (unlines formattedEntries)
   where
-    formatEntry :: Show a => (a, Int) -> String
+    formattedEntries = map formatEntry ms
     formatEntry (elem, multiplicity) = show elem ++ " - " ++ show multiplicity
+
 
 {- |Main function used to test the MultiSet module
 -}
