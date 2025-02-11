@@ -114,7 +114,7 @@ mapMSet :: Eq a => (b -> a) -> MSet b -> MSet a
 which introduces the constraint (Eq a). This constraint is necessary to ensure that the 
 MSet remains well-formed by merging elements that become equal after applying the function.
 
-A Functor does not allow additional constraints on "a" or "b". 
-Furthermore, Functor does not provide a mechanism to merge elements with the same value, 
-which is required to maintain a well-formed multiset.
+The key issue is that Functor does not allow additional constraints on "a" or "b". 
+Moreover, Functor does not provide a mechanism to merge elements that map to 
+the same value, which is essential for maintaining a well-formed MSet.
 -}
