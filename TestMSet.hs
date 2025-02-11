@@ -16,12 +16,9 @@ ciao = sort . map toLower
 readMSet :: FilePath -> IO (MSet String)
 readMSet filename = do
   content <- readFile filename
-  let wordsList = words content
-      ciaoList = map ciao wordsList
-      groupedCiaos = group $ sort ciaoList
-      ciaoWithMultiplicity = map (\grouped -> (head grouped, length grouped)) groupedCiaos
-  return $ MS ciaoWithMultiplicity
-
+  return $ foldr addCiao empty (words content)
+  where
+    addCiao word ms = add ms (ciao word)
 
 
 {- |Function to write MSet elements with multiplicities to a file
