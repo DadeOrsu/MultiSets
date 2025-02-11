@@ -117,12 +117,4 @@ MSet remains well-formed by merging elements that become equal after applying th
 A Functor does not allow additional constraints on "a" or "b". 
 Furthermore, Functor does not provide a mechanism to merge elements with the same value, 
 which is required to maintain a well-formed multiset.
-
-For example, given:
-
-  let ms = MS [(1, 2), (2, 3)]
-  let f x = if x == 1 then 2 else 3
-
-applying mapMSet f should yield MS [(2, 5), (3, 3)] by merging occurrences, 
-but fmap does not inherently support such aggregation.
 -}
